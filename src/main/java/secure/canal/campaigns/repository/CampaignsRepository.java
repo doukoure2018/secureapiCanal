@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface CampaignsRepository extends JpaRepository<Campaigns,Long> {
 
-    List<Campaigns> findAllByOrderByCreatedAtAsc();
+    List<Campaigns> findAllByOrderByCreatedAtDesc();
 }

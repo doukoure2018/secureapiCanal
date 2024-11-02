@@ -33,14 +33,14 @@ public class ImportConfig {
         customerImport.setDataClazz(ImportFileDto.class);
         List<CellConfig> customerImportCellConfigs = new ArrayList<>();
 
-        customerImportCellConfigs.add(new CellConfig(0, "nom"));
-        customerImportCellConfigs.add(new CellConfig(1, "prenom"));
-        customerImportCellConfigs.add(new CellConfig(2, "region"));
-        customerImportCellConfigs.add(new CellConfig(3, "prefecture"));
-        customerImportCellConfigs.add(new CellConfig(4, "sousPrefecture"));
-        customerImportCellConfigs.add(new CellConfig(5, "quartierDistrict"));
-        customerImportCellConfigs.add(new CellConfig(6, "contact"));
-        customerImportCellConfigs.add(new CellConfig(7, "message"));
+//        customerImportCellConfigs.add(new CellConfig(0, "nom"));
+//        customerImportCellConfigs.add(new CellConfig(1, "prenom"));
+//        customerImportCellConfigs.add(new CellConfig(2, "region"));
+//        customerImportCellConfigs.add(new CellConfig(3, "prefecture"));
+//        customerImportCellConfigs.add(new CellConfig(4, "sousPrefecture"));
+//        customerImportCellConfigs.add(new CellConfig(5, "quartierDistrict"));
+          customerImportCellConfigs.add(new CellConfig(0, "contact"));
+//        customerImportCellConfigs.add(new CellConfig(7, "message"));
 
         customerImport.setCellImportConfigs(customerImportCellConfigs);
     }

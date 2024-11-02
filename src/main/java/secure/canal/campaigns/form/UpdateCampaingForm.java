@@ -1,21 +1,19 @@
-package secure.canal.campaigns.payload;
+package secure.canal.campaigns.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import secure.canal.campaigns.utils.CampaignStatus;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class CampaignsDto {
-    private Long id;
+public class UpdateCampaingForm {
+
     private String name;
     private LocalDateTime createdAt;
     private String status;
     private String mode;
     private Long totalSms;
-    private Long id_user;
 }

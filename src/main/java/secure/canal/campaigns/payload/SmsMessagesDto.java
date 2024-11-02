@@ -1,5 +1,6 @@
 package secure.canal.campaigns.payload;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class SmsMessagesDto {
-
     private Long id;
+    @NotEmpty(message = "Contact should not be empty")
     private String recipientNumber;
+    @NotEmpty(message = "Message should not be empty")
     private String message;
-    private MessageStatus status;
+    private String status;
     private LocalDateTime sentAt;
     private Long campaign_id;
     private Long id_user;
-
 }

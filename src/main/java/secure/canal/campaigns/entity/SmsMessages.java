@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import secure.canal.campaigns.enumeration.MessageStatus;
+
 
 import java.time.LocalDateTime;
 
@@ -28,12 +28,11 @@ public class SmsMessages {
     private Long id;
     @Column(name = "recipient_number")
     private String recipientNumber;
+    @Column(name = "name", length = 800)
     private String message;
-    @Enumerated(EnumType.STRING)
-    private MessageStatus status;
+    private String status;
     @Column(name = "sent_at")
     private LocalDateTime sentAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id", nullable = false)
     private Campaigns campaigns;

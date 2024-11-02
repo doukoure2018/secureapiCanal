@@ -7,10 +7,15 @@ import kong.unirest.core.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import secure.canal.campaigns.payload.BalanceResponse;
 import secure.canal.campaigns.payload.TokenResponse;
 import secure.canal.campaigns.service.OrangeSmsService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -40,7 +45,7 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
     }
 
     @Override
-    public int getSmsBalance(String token) {
+    public BalanceResponse getSmsBalance(String token) {
         try {
             HttpResponse<String> response = Unirest.get(smsBalanceUrl)
                     .header("Authorization", "Bearer " + token)
@@ -49,10 +54,10 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
 
             if (response.getStatus() == 200) {
                 log.info("Retrieved SMS balance successfully");
-                return extractAvailableUnits(response.getBody());
+                return extractBalanceResponse(response.getBody());
             } else {
                 log.warn("Failed to retrieve SMS balance: " + response.getBody());
-                return -1;  // Return -1 or handle an error case
+                return null;  // Handle error case appropriately
             }
         } catch (Exception e) {
             log.error("Error retrieving SMS balance", e);
@@ -60,20 +65,25 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
         }
     }
 
-    private int extractAvailableUnits(String responseBody) throws IOException {
+    private BalanceResponse extractBalanceResponse(String responseBody) throws IOException {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         if (jsonNode.isArray() && jsonNode.size() > 0) {
             JsonNode firstContract = jsonNode.get(0);
-            if (firstContract.has("availableUnits")) {
-                return firstContract.get("availableUnits").asInt();
-            } else {
-                throw new IllegalArgumentException("No 'availableUnits' field found in response");
-            }
+            BalanceResponse balanceResponse = new BalanceResponse();
+            balanceResponse.setAvailableUnits(firstContract.get("availableUnits").asLong());
+            balanceResponse.setStatus(firstContract.get("status").asText());
+            balanceResponse.setExpirationDate(parseDate(firstContract.get("expirationDate").asText()));
+            return balanceResponse;
         } else {
             throw new IllegalArgumentException("Invalid response format or empty array");
         }
     }
+
+    private LocalDateTime parseDate(String dateStr) {
+        return LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
+    }
+
 
     @Override
     public TokenResponse getOAuthToken() {
@@ -110,7 +120,6 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
     @Override
     public void sendSms(String token, String recipient, String senderName, String message) {
         String escapedMessage = escapeMessage(message);
-
         try {
             HttpResponse<String> response = Unirest.post(smsApiUrl)
                     .header("Authorization", "Bearer " + token)
@@ -129,21 +138,42 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
         }
     }
 
+
     private String escapeMessage(String message) {
-        return message.replace("\n", "\\n").replace("\"", "\\\"");
+        // Escaping only the double quotes
+        return message.replace("\"", "\\\"");
     }
 
+
+
+
     private String constructSmsRequestBody(String recipient, String senderName, String message) {
-        return "{\r\n" +
-                "  \"outboundSMSMessageRequest\": {\r\n" +
-                "    \"address\": \"tel:+224" + recipient + "\",\r\n" +
-                "    \"senderAddress\": \"" + senderAddress + "\",\r\n" +
-                "    \"senderName\": \"" + senderName + "\",\r\n" +
-                "    \"outboundSMSTextMessage\": {\r\n" +
-                "      \"message\": \"" + message + "\"\r\n" +
-                "    }\r\n" +
-                "  }\r\n" +
-                "}";
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Create the body of the request
+            Map<String, Object> outboundSmsMessageRequest = new HashMap<>();
+            outboundSmsMessageRequest.put("address", "tel:+224" + recipient);
+            outboundSmsMessageRequest.put("senderAddress", senderAddress);
+            outboundSmsMessageRequest.put("senderName", senderName);
+
+            // Create the message part
+            Map<String, String> outboundSmsTextMessage = new HashMap<>();
+            outboundSmsTextMessage.put("message", message);
+
+            // Combine into a final structure
+            outboundSmsMessageRequest.put("outboundSMSTextMessage", outboundSmsTextMessage);
+
+            // Wrap everything into the outer request object
+            Map<String, Object> finalRequestBody = new HashMap<>();
+            finalRequestBody.put("outboundSMSMessageRequest", outboundSmsMessageRequest);
+
+            // Convert to JSON
+            return objectMapper.writeValueAsString(finalRequestBody);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error constructing SMS request body", e);
+        }
     }
 }
 

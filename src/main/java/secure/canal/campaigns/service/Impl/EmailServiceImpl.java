@@ -31,7 +31,7 @@ public class EmailServiceImpl implements EmailService {
             message.setFrom("douklifsa93@gmail.com");
             message.setTo(email);
             message.setText(getEmailMessage(firstName, verificationUrl, verificationType));
-            message.setSubject(String.format("SecureCapita - %s Verification Email", StringUtils.capitalize(verificationType.getType())));
+            message.setSubject(String.format("Canal Plus - %s Verification Email", StringUtils.capitalize(verificationType.getType())));
             mailSender.send(message);
             log.info("Email sent to {}", firstName);
         } catch (Exception exception) {
@@ -42,9 +42,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendSMS(String recipient, String message) {
         TokenResponse tokenResponse = orangeSmsService.getOAuthToken();
-        int numberOfBalance= orangeSmsService.getSmsBalance(tokenResponse.getToken());
         CompletableFuture.runAsync(() -> {
-
             if (tokenResponse.getStatus() != 200) {
                 throw new ApiException("Failed to get OAuth token");
             }
@@ -58,8 +56,6 @@ public class EmailServiceImpl implements EmailService {
             return null;
         });
     }
-
-
 
     private String getEmailMessage(String firstName, String verificationUrl, VerificationType verificationType) {
         switch (verificationType) {

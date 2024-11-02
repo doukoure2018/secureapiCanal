@@ -1,5 +1,6 @@
 package secure.canal.campaigns.service;
 
+import secure.canal.campaigns.payload.BalanceResponse;
 import secure.canal.campaigns.payload.TokenResponse;
 
 public interface OrangeSmsService {
@@ -8,5 +9,5 @@ public interface OrangeSmsService {
 
     public void sendSms(String token, String recipient, String senderName, String message);
 
-    int getSmsBalance(String token);
+    BalanceResponse getSmsBalance(String token);
 }
