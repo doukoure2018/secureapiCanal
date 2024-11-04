@@ -2,11 +2,11 @@ package secure.canal.campaigns.constant;
 
 public class Constants {
     // Security
-    public static final String[] PUBLIC_URLS = { "/auth/secureapi/verify/password/**",
-            "/auth/secureapi/login/**", "/auth/secureapi/verify/code/**", "/auth/secureapi/register/**", "/auth/secureapi/resetpassword/**", "/auth/secureapi/verify/account/**",
-            "/auth/secureapi/refresh/token/**", "/auth/secureapi/image/**", "/auth/secureapi/new/password/**" };
+    public static final String[] PUBLIC_URLS = { "/secureapi/verify/password/**",
+            "/secureapi/login/**", "/secureapi/verify/code/**", "/secureapi/register/**", "/secureapi/resetpassword/**", "/secureapi/verify/account/**",
+            "/secureapi/refresh/token/**", "/secureapi/image/**", "/secureapi/new/password/**" };
     public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String[] PUBLIC_ROUTES = { "/auth/secureapi/new/password", "/auth/secureapi/login", "/auth/secureapi/verify/code", "/auth/secureapi/register", "/auth/secureapi/refresh/token", "/auth/secureapi/image" };
+    public static final String[] PUBLIC_ROUTES = { "/secureapi/new/password", "/secureapi/login", "/secureapi/verify/code", "/secureapi/register", "/secureapi/refresh/token", "/secureapi/image" };
     public static final String HTTP_OPTIONS_METHOD = "OPTIONS";
     public static final String AUTHORITIES = "authorities";
     public static final String GET_ARRAYS_LLC = "GET_ARRAYS_LLC";

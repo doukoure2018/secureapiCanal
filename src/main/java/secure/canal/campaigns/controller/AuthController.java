@@ -48,7 +48,7 @@ import static secure.canal.campaigns.utils.UserUtils.getAuthenticatedUser;
 import static secure.canal.campaigns.utils.UserUtils.getLoggedInUser;
 
 @RestController
-@RequestMapping("/auth/secureapi")
+@RequestMapping("/secureapi")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -80,7 +80,7 @@ public class AuthController {
 
     @GetMapping("/comptes")
     public ResponseEntity<HttpResponse> getAllComptes(@AuthenticationPrincipal UserDto user) {
-        List<UserDto> comptes = userService.getAllComptes();
+        //List<UserDto> comptes = userService.getAllComptes();
         return ResponseEntity.created(getUri()).body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
