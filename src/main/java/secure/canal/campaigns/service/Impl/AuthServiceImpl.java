@@ -585,12 +585,12 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     private String setUserImageUrl(String email) {
-        return fromCurrentContextPath().path("/auth/secureapi/image/" + email + ".png").toUriString();
+        return fromCurrentContextPath().path("/secureapi/image/" + email + ".png").toUriString();
     }
 
     private String getVerificationUrl(String key, String type) {
         //return fromCurrentContextPath().path("/auth/secureapi/verify/" + type + "/" + key).toUriString();
-        return frontendTestBaseUrl + "/auth/secureapi/verify/" + type + "/" + key;
+        return frontendTestBaseUrl + "/secureapi/verify/" + type + "/" + key;
     }
 
     private Integer getEmailCount(String email){

@@ -468,7 +468,7 @@ public class AuthController {
     }
 
     private URI getUri() {
-        return URI.create(fromCurrentContextPath().path("/auth/secureapi/get/<userId>").toUriString());
+        return URI.create(fromCurrentContextPath().path("/secureapi/get/<userId>").toUriString());
     }
 
 
