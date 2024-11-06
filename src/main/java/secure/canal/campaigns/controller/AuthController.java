@@ -447,7 +447,8 @@ public class AuthController {
         }
     }
 
-    private boolean isHeaderAndTokenValid(HttpServletRequest request) {
+    private boolean isHeaderAndTokenValid(HttpServletRequest request)
+    {
         return  request.getHeader(AUTHORIZATION) != null
                 &&  request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
                 && jwtTokenProvider.isTokenValid(

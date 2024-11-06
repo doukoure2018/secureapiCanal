@@ -619,14 +619,9 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         // Create a map of user IDs to RoleDto objects
         Map<Long, RoleDto> rolesMap = users.stream()
                 .collect(Collectors.toMap(User::getId, user -> mapper.map(roleRepository.getRoleByUserId(user.getId()), RoleDto.class)));
-
         // Now map users to UserDto with RoleDto
         return fromUsers(users, rolesMap);
     }
-
-
-
-
 
 }
 

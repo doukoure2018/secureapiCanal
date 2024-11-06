@@ -42,6 +42,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendSMS(String recipient, String message) {
         TokenResponse tokenResponse = orangeSmsService.getOAuthToken();
+        System.out.println(tokenResponse.getStatus());
         CompletableFuture.runAsync(() -> {
             if (tokenResponse.getStatus() != 200) {
                 throw new ApiException("Failed to get OAuth token");

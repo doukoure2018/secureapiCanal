@@ -7,6 +7,7 @@ import kong.unirest.core.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import secure.canal.campaigns.exception.ApiException;
 import secure.canal.campaigns.payload.BalanceResponse;
 import secure.canal.campaigns.payload.TokenResponse;
 import secure.canal.campaigns.service.OrangeSmsService;
@@ -129,14 +130,20 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
 
             if (response.getStatus() == 201) {
                 log.info("SMS sent successfully!");
+            } else if (response.getStatus() == 403) {
+                // Log the specific error and handle as "FAILED"
+                log.warn("Failed to send SMS due to expired contract or insufficient balance.");
+                throw new ApiException("Expired contract or insufficient balance for SMS.");
             } else {
                 log.warn("Failed to send SMS: " + response.getBody());
+                throw new ApiException("SMS send failed with status: " + response.getStatus());
             }
         } catch (Exception e) {
             log.error("Error sending SMS", e);
             throw new RuntimeException("Error sending SMS", e);
         }
     }
+
 
 
     private String escapeMessage(String message) {
@@ -175,6 +182,7 @@ public class OrangeSmsServiceImpl implements OrangeSmsService {
             throw new RuntimeException("Error constructing SMS request body", e);
         }
     }
+
 }
 
 

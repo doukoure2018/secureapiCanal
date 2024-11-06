@@ -196,7 +196,6 @@ public class SmsMessagesServiceImpl implements SmsMessagesService {
         List<SmsMessages> listOfMesssage= smsMessages.getContent();
         List<SmsMessagesDto> content = listOfMesssage.stream().map(messages -> mapper.map(messages,SmsMessagesDto.class))
                 .collect(Collectors.toList());
-
         SmsMessageResponse smsMessageResponse = new SmsMessageResponse();
         smsMessageResponse.setContent(content);
         smsMessageResponse.setPageNo(smsMessages.getNumber());
@@ -263,10 +262,6 @@ public class SmsMessagesServiceImpl implements SmsMessagesService {
 
         return stats;
     }
-
-
-
-
 
     @Override
     public List<SmsMessagesDto> getAllMessages() {
@@ -336,17 +331,22 @@ public class SmsMessagesServiceImpl implements SmsMessagesService {
     private void sendAndSaveSmsMessage(SmsMessages message) {
         CompletableFuture.runAsync(() -> {
             try {
-                boolean sent = isNumeric(message.getRecipientNumber());
-                if (sent) {
-                    message.setStatus(MessageStatus.SENT.toString());
+                // Check if the recipient number is valid
+                if (isNumeric(message.getRecipientNumber())) {
+                    // Attempt to send the SMS
                     emailService.sendSMS(message.getRecipientNumber(), message.getMessage());
+                    // Set the message status to SENT only if sending was successful
+                    message.setStatus(MessageStatus.SENT.toString());
                 } else {
+                    // Invalid recipient number, mark as failed
                     message.setStatus(MessageStatus.FAILED.toString());
                 }
             } catch (Exception e) {
+                // Sending failed, mark status as failed
                 message.setStatus(MessageStatus.FAILED.toString());
                 log.error("Error sending SMS: ", e);
             } finally {
+                // Save the message with the updated status
                 smsMessagesRepository.save(message);
             }
         }).exceptionally(ex -> {
@@ -354,6 +354,29 @@ public class SmsMessagesServiceImpl implements SmsMessagesService {
             return null;
         });
     }
+
+
+//    private void sendAndSaveSmsMessage(SmsMessages message) {
+//        CompletableFuture.runAsync(() -> {
+//            try {
+//                boolean sent = isNumeric(message.getRecipientNumber());
+//                if (sent) {
+//                    message.setStatus(MessageStatus.SENT.toString());
+//                    emailService.sendSMS(message.getRecipientNumber(), message.getMessage());
+//                } else {
+//                    message.setStatus(MessageStatus.FAILED.toString());
+//                }
+//            } catch (Exception e) {
+//                message.setStatus(MessageStatus.FAILED.toString());
+//                log.error("Error sending SMS: ", e);
+//            } finally {
+//                smsMessagesRepository.save(message);
+//            }
+//        }).exceptionally(ex -> {
+//            log.error("Exception in sendAndSaveSmsMessage", ex);
+//            return null;
+//        });
+//    }
 
 //    private void sendAndSaveSmsMessage(SmsMessages message) {
 //        try {
